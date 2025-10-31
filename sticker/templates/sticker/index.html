@@ -1,0 +1,106 @@
+{% extends "sticker/layout.html" %}
+{% block body %}
+    <style> 
+        #map { 
+            height: 500px; 
+            width: 100%; 
+        }
+
+       .marker-border {
+            background-position: center;
+            background-size: 50px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }  
+
+        .mapboxgl-marker { 
+            cursor: pointer; 
+        } 
+ 
+        .locator-popup { 
+            font-size: 14px; 
+        } 
+   </style>
+   <div style="font-family: EB Garamond; background-color: #f1e931; border-radius: 10px; padding-left: 50px;">
+        <h2>Nett hier</h2>
+   </div>
+   <div style="font-family: EB Garamond; padding-left: 50px;">
+        <h5>Click a Sticker to see details</h5>
+
+
+        <p id="demo"></p>
+   </div>
+
+   <div id='map' class='map'></div>
+   <!-- load TomTom Maps Web SDK from CDN --> 
+   <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps.css'/> 
+   <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps-web.min.js'></script> 
+     
+   <script> 
+    // get user location
+        function getLocation() {
+            return new Promise((success, error) =>
+                navigator.geolocation.getCurrentPosition(success, error)
+            );
+        }
+    
+        function success(position) {
+            let lng = position.coords.longitude
+            let lat = position.coords.latitude         
+            let bound = [lng, lat]
+            sessionStorage.lng = lng
+            sessionStorage.lat = lat
+            sessionStorage.bound = bound
+            return bound
+        }
+
+        function error() {
+            alert("Sorry, no position available.");
+        } 
+
+    // create the map 
+    async function makemap() {
+         let coord = await getLocation()
+        // add store markers
+        console.log(sessionStorage.lat)
+        let myposition = success(coord)
+        console.log(myposition)
+        tt.setProductInfo('TomTom Maps Django Demo', '1.0'); 
+        let map = tt.map({ 
+            key: 'x6s2tbo6Lu5ZazeXuReaacYw9MeLuXJN', 
+            container: 'map', 
+            center: myposition,
+            zoom: 8
+        }); 
+
+        let stickerLocations = JSON.parse("{{ locations|escapejs }}"); 
+        
+        //loop over sticker database entries
+        for (let stickerLocation of stickerLocations) { 
+            let coordinates = [stickerLocation.longitude, stickerLocation.latitude]; 
+ 
+            // create popup to display sticker information when the marker is clicked 
+            let popup = new tt.Popup().setHTML(` 
+                <div class="locator-popup"> 
+                    <div >
+                    <p>${stickerLocation.city} - ${stickerLocation.country}</p>
+                    </div>
+                    <img src="/media/${stickerLocation.sticker_img}" alt="Sticker" width="100">
+                </div> 
+            `); 
+
+            //create customized marker
+            var icon = document.createElement('div')
+            icon.className = 'marker-border'
+            icon.style.backgroundImage = 'url(/static/sticker/nett_hier_sticker.png)'
+            
+            let marker = new tt.Marker({ element: icon}) 
+                .setLngLat(coordinates) 
+                .setPopup(popup) 
+                .addTo(map);
+        } 
+    };
+    makemap()
+    </script> 
+{% endblock %}
