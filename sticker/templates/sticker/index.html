@@ -32,75 +32,64 @@
         <p id="demo"></p>
    </div>
 
-   <div id='map' class='map'></div>
-   <!-- load TomTom Maps Web SDK from CDN --> 
-   <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps.css'/> 
-   <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps-web.min.js'></script> 
-     
+   <!-- load openfreemap -->
+   <div id="freemap" style="width: 100%; height: 500px"></div>
+
    <script> 
-    // get user location
-        function getLocation() {
-            return new Promise((success, error) =>
-                navigator.geolocation.getCurrentPosition(success, error)
-            );
+        // store Greenwich coordinates, will be use in case geolocation is not working
+        sessionStorage.lng = 0
+        sessionStorage.lat = 51.48125
+        
+        // get user location
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+            /* geolocation IS NOT available */
         }
-    
+
         function success(position) {
-            let lng = position.coords.longitude
-            let lat = position.coords.latitude         
-            let bound = [lng, lat]
-            sessionStorage.lng = lng
-            sessionStorage.lat = lat
-            sessionStorage.bound = bound
-            return bound
+            sessionStorage.lng = position.coords.longitude
+            sessionStorage.lat = position.coords.latitude
+            makefreemap()
         }
 
         function error() {
             alert("Sorry, no position available.");
-        } 
+        }
 
-    // create the map 
-    async function makemap() {
-         let coord = await getLocation()
-        // add store markers
-        console.log(sessionStorage.lat)
-        let myposition = success(coord)
-        console.log(myposition)
-        tt.setProductInfo('TomTom Maps Django Demo', '1.0'); 
-        let map = tt.map({ 
-            key: 'x6s2tbo6Lu5ZazeXuReaacYw9MeLuXJN', 
-            container: 'map', 
-            center: myposition,
-            zoom: 8
-        }); 
+        let loc = [sessionStorage.lng, sessionStorage.lat]
 
-        let stickerLocations = JSON.parse("{{ locations|escapejs }}"); 
-        
-        //loop over sticker database entries
-        for (let stickerLocation of stickerLocations) { 
-            let coordinates = [stickerLocation.longitude, stickerLocation.latitude]; 
- 
-            // create popup to display sticker information when the marker is clicked 
-            let popup = new tt.Popup().setHTML(` 
-                <div class="locator-popup"> 
-                    <div >
-                    <p>${stickerLocation.city} - ${stickerLocation.country}</p>
-                    </div>
-                    <img src="/media/${stickerLocation.sticker_img}" alt="Sticker" width="100">
-                </div> 
-            `); 
-
-            //create customized marker
-            var icon = document.createElement('div')
-            icon.className = 'marker-border'
-            icon.style.backgroundImage = 'url(/static/sticker/nett_hier_sticker.png)'
-            
-            let marker = new tt.Marker({ element: icon}) 
-                .setLngLat(coordinates) 
-                .setPopup(popup) 
-                .addTo(map);
-        } 
-    };
-    makemap()
+        // create the map 
+        function makefreemap() {
+            let freemap = new maplibregl.Map({ 
+                style: 'https://tiles.openfreemap.org/styles/liberty',
+                center: loc,
+                zoom: 2,
+                container: 'freemap',
+            });
+            let stickerLocations = JSON.parse("{{ locations|escapejs }}");
+            //loop over sticker database entries
+            for (let stickerLocation of stickerLocations) {
+                let coordinates = [stickerLocation.longitude, stickerLocation.latitude];
+                // create popup to display sticker information when the marker is clicked 
+                let popup = new maplibregl.Popup().setHTML(`
+                    <div class="locator-popup"> 
+                        <div >
+                        <p>${stickerLocation.city} - ${stickerLocation.country}</p>
+                        </div>
+                        <img src="/media/${stickerLocation.sticker_img}" alt="Sticker" width="100">
+                    </div> 
+                `);
+                //create customized marker
+                var icon = document.createElement('div')
+                icon.className = 'marker-border'
+                icon.style.backgroundImage = 'url(/static/sticker/nett_hier_sticker.png)'
+                //add marker to map
+                let marker = new maplibregl.Marker({ element: icon}) 
+                    .setLngLat(coordinates) 
+                    .setPopup(popup) 
+                    .addTo(freemap);
+            } 
+        };
     </script> 
 {% endblock %}
