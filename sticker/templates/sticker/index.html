@@ -54,7 +54,8 @@
         }
 
         function error() {
-            alert("Sorry, no position available.");
+            alert("Sorry, no position available. Greenwich used instead");
+            makefreemap()
         }
 
         let loc = [sessionStorage.lng, sessionStorage.lat]
@@ -64,7 +65,7 @@
             let freemap = new maplibregl.Map({ 
                 style: 'https://tiles.openfreemap.org/styles/liberty',
                 center: loc,
-                zoom: 2,
+                zoom: 3,
                 container: 'freemap',
             });
             let stickerLocations = JSON.parse("{{ locations|escapejs }}");
