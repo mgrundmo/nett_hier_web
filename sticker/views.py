@@ -40,6 +40,8 @@ def logout_view(request):
 
 def register(request):
     if request.method == "POST":
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
         username = request.POST["username"]
         email = request.POST["email"]
 
@@ -53,7 +55,7 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(first_name, last_name, username, email, password)
             user.save()
         except IntegrityError:
             return render(request, "sticker/register.html", {
