@@ -1,3 +1,4 @@
+from cloudinary.forms import CloudinaryFileField
 from django import forms
 from .models import Location, Countries
 
@@ -12,3 +13,5 @@ class LocationForm(forms.ModelForm):
         required=True,
         widget=forms.Select(attrs={'class':'form-select', 'style': 'width:400px'})
     )
+
+    sticker_img = CloudinaryFileField()

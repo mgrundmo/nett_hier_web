@@ -29,9 +29,15 @@
         <h5>Click a Sticker to see details</h5>
 
 
-        <p id="demo"></p>
+        <p id="demo">{{ test }}</p>
    </div>
+    {% load cloudinary %}  
+    {% for sticker in test %}
+        <p>{{sticker.country}}</p>
+        {% cloudinary sticker.sticker_img quality='auto' width='200' height='200' crop='pad' background='gen_fill:ignore-foreground_true' %}
+    {% endfor %}
 
+   
    <!-- load openfreemap -->
    <div id="freemap" style="width: 100%; height: 500px"></div>
 
@@ -76,9 +82,9 @@
                 let popup = new maplibregl.Popup().setHTML(`
                     <div class="locator-popup"> 
                         <div >
-                        <p>${stickerLocation.city} - ${stickerLocation.country}</p>
+                            <p>${stickerLocation.city} - ${stickerLocation.country}</p>
                         </div>
-                        <img src="/media/${stickerLocation.sticker_img}" alt="Sticker" width="100">
+                        <img src="https://res.cloudinary.com/dojtj3mlu/c_fill,ar_1.0,h_200/r_10/${stickerLocation.sticker_img}" alt="Sticker">
                     </div> 
                 `);
                 //create customized marker

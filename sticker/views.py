@@ -10,8 +10,14 @@ from .forms import LocationForm
 from .models import Location, User
 
 def index(request):
-    location_list = list(Location.objects.order_by('city').values())
-    location_json = json.dumps(location_list)
+    location_items = list(Location.objects.order_by('city').values())
+    for item in location_items:
+        #convert cloudinary field to be used in json.dumps
+        photo = item["sticker_img"]
+        photo_url = str(photo)
+        item["sticker_img"] = photo_url
+        #item('sticker_img') = str(item.image)
+    location_json = json.dumps(location_items)
     context = {'locations': location_json}
     return render(request, 'sticker/index.html', context)
 

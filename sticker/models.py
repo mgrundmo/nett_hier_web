@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -12,7 +13,8 @@ class Location(models.Model):
     city = models.CharField(max_length=100)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    sticker_img = models.ImageField(upload_to='images/')
+    #sticker_img = models.ImageField(upload_to='images/')
+    sticker_img = CloudinaryField('image')
 
     def __str__(self):
         return self.city
