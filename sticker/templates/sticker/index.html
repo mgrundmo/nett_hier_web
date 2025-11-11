@@ -1,4 +1,6 @@
+
 {% extends "sticker/layout.html" %}
+{% load static %}
 {% block body %}
     <style> 
         #map { 
@@ -8,7 +10,8 @@
 
        .marker-border {
             background-position: center;
-            background-size: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -23,7 +26,7 @@
         } 
    </style>
    <div style="font-family: EB Garamond; background-color: #f1e931; border-radius: 10px; padding-left: 50px;">
-        <h2>Nett hier</h2>
+        <img src="{% static '/sticker/nett_hier_sticker.png' %}" alt="nett_hier_sticker" width="150" style="padding-left: 5px">     
    </div>
    <div style="font-family: EB Garamond; padding-left: 50px;">
         <h5>Click a Sticker to see details</h5>
