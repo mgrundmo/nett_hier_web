@@ -3,9 +3,10 @@
 {% load static %}
 {% block body %}
     <style> 
-        #map { 
-            height: 480px; 
+        #freemap { 
+            height: 520px; 
             width: 100%; 
+            border-radius: 10px;
         }
 
        .marker-border {
@@ -25,18 +26,19 @@
             font-size: 14px; 
         } 
    </style>
-   <div style="font-family: EB Garamond; background-color: #f1e931; border-radius: 10px; margin-bottom: 10px">
-        <img src="{% static '/sticker/nett_hier_sticker.png' %}" alt="nett_hier_sticker" width="120" style="display: block; margin-left: auto; margin-right: auto;">     
-   </div>
-    {% load cloudinary %}  
-    {% for sticker in test %}
-        <p>{{sticker.country}}</p>
-        {% cloudinary sticker.sticker_img quality='auto' width='200' height='200' crop='pad' background='gen_fill:ignore-foreground_true' %}
-    {% endfor %}
-
+   <div style="height: 90px; font-family: EB Garamond; background-color: #f1e931; width: 100%; border-radius: 10px; margin-bottom: 10px">
+        <div style="width: 30%; float: left; text-align: center;">    
+            <img src="{% static '/sticker/nett_hier_sticker.png' %}" alt="nett_hier_sticker" width="120" style="margin-left: auto;">     
+        </div>
+        {% if user.is_authenticated %}
+        <div style="width: 70%; float: right;">    
+            <h4 style="line-height: 90px; text-align: right; padding-right: 20px;">{{ user.first_name }}</h4>
+        </div>
+        {% endif %}
+    </div>
    
    <!-- load openfreemap -->
-   <div id="freemap" style="width: 100%; height: 500px; border-radius: 10px;"></div>
+   <div id="freemap"></div>
 
    <script> 
         // store Greenwich coordinates, will be use in case geolocation is not working
@@ -64,8 +66,8 @@
         let loc = [sessionStorage.lng, sessionStorage.lat]
 
         // create the map 
-        function makefreemap() {
-            let freemap = new maplibregl.Map({ 
+        function makefreemap() { 
+            const freemap = new maplibregl.Map({ 
                 style: 'https://tiles.openfreemap.org/styles/liberty',
                 center: loc,
                 zoom: 3,

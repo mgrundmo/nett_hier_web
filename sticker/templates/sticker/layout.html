@@ -14,38 +14,38 @@
         <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet">
     </head>
     <body>
-        <nav id="menu">
-            <ul id="menu-closed">
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'index' %}">All Sticker</a>
-                </li>
+        <div style="margin: 5px;">
+            <nav id="menu">
+                <ul id="menu-closed">
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'index' %}">All Sticker</a>
+                    </li>
                 {% if user.is_authenticated %}
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'index' %}">My Sticker</a>
-                </li>
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'new_sticker' %}">New Sticker</a>
-                </li>
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-                </li>
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'index' %}">My Sticker</a>
+                    </li>
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'new_sticker' %}">New Sticker</a>
+                    </li>
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
                 {% else %}
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
-                </li>
-                <li class="mobile-nav">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
-                </li>
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="mobile-nav">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
                 {% endif %}
-                <li class="mobile-nav">
-                    <a href="#menu-closed">&#215; 🍔 vertilgen</a>
-                </li>
-                <li class="mobile-nav">
-                    <a href="#menu">&#9776; Menu</a>
-                </li>
-            </ul>
-        </nav>
-        <div class="container" style="margin-top: 10px">
+                    <li class="mobile-nav">
+                        <a href="#menu-closed">&#215; 🍔 vertilgen</a>
+                    </li>
+                    <li class="mobile-nav">
+                        <a href="#menu">&#9776; Menu</a>
+                    </li>
+                </ul>
+            </nav>
             {% block body %} 
             {% endblock %} 
         </div>
