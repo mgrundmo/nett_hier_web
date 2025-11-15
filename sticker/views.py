@@ -1,5 +1,7 @@
 import datetime
 import json
+
+from cloudinary import CloudinaryImage
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
@@ -12,11 +14,13 @@ from .models import Location, User
 def index(request):
     location_items = list(Location.objects.order_by('city').values())
     for item in location_items:
-        #convert cloudinary field to be used in json.dumps
+        #convert cloudinary field to image url to be used in template
         photo = item["sticker_img"]
         photo_url = str(photo)
-        item["sticker_img"] = photo_url
-        #item('sticker_img') = str(item.image)
+        img_url = CloudinaryImage(photo_url).build_url(
+            width = 200, height = 200, crop = 'fill', radius = 10)
+        item["sticker_img"] = img_url
+    #create json output for use in javascript
     location_json = json.dumps(location_items)
     context = {'locations': location_json}
     return render(request, 'sticker/index.html', context)
