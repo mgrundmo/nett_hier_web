@@ -42,8 +42,10 @@
 
    <script> 
         // store Greenwich coordinates, will be use in case geolocation is not working
-        sessionStorage.lng = 0
-        sessionStorage.lat = 51.48125
+        //sessionStorage.lng = 0
+        //console.log(sessionStorage.lng)
+        //sessionStorage.lat = 51.48125
+        //console.log(sessionStorage.lat)
         // get user location
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(success, error);
@@ -53,18 +55,23 @@
 
         function success(position) {
             sessionStorage.lng = position.coords.longitude
+            console.log(sessionStorage.lng)
             sessionStorage.lat = position.coords.latitude
+            console.log(sessionStorage.lat)
             let loc = [sessionStorage.lng, sessionStorage.lat]
+            console.log(loc)
             makefreemap(loc)
         }
 
         function error() {
-            alert("Sorry, no position available. Greenwich coordination used instead");
-            makefreemap()
+            alert("Sorry, no position available. Greenwich coordinates used instead");
+            loc = [0, 51.48125]
+            makefreemap(loc)
         }
 
         // create the map 
         function makefreemap(loc) { 
+            console.log(loc)
             const freemap = new maplibregl.Map({ 
                 style: 'https://tiles.openfreemap.org/styles/liberty',
                 center: loc,
